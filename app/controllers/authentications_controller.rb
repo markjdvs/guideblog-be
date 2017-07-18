@@ -3,6 +3,7 @@ class AuthenticationsController < ApplicationController
 
   def register
     user = User.new(Uploader.upload(user_params))
+
     if user.save
       render json: user, status: :ok
     else
@@ -12,9 +13,9 @@ class AuthenticationsController < ApplicationController
 
   def login
     user = User.find_by_email(params[:email])
+    p user
     if user && user.authenticate(params[:password])
       token = Auth.issue( { id: user.id} )
-
       render json: { token: token, user: UserSerializer.new(user) } , status: :ok
     else
       render json: {errors: ["Invalid login credentials"] }, status: 401
